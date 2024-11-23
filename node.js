@@ -10,14 +10,14 @@ app.use(express.json());
 
 // Endpoint to receive NFC data and save it
 app.post('/api/log-nfc', (req, res) => {
-  const { nfcData } = req.body;
-  if (nfcData) {
+  const { tagContent } = req.body;
+  if (tagContent) {
     const timestamp = new Date().toISOString();
-    nfcLogs.push({ nfcData, timestamp });
+    nfcLogs.push({ tagContent, timestamp });
     res.status(200).send({ message: 'NFC data logged successfully' });
   } else {
-    res.status(400).send({ message: 'NFC data is required' });
-  }
+    res.status(400).send({ message: 'Tag content is required' });
+  }  
 });
 
 // Endpoint to get NFC logs
