@@ -21,15 +21,18 @@ app.post('/api/log-nfc', (req, res) => {
     nfcLogs.push({ nfcData, timestamp });
     console.log('Saved NFC data:', { nfcData, timestamp });
 
-    // Always return a JSON response
+    // Ensure JSON response
+    res.setHeader('Content-Type', 'application/json');
     res.status(200).json({ message: 'NFC data logged successfully' });
   } catch (error) {
     console.error('Error processing request:', error.message);
 
-    // Return a valid JSON error response
+    // Always return valid JSON even in errors
+    res.setHeader('Content-Type', 'application/json');
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 
 
