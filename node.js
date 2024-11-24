@@ -11,36 +11,26 @@ app.use(express.json());
 // Endpoint to receive NFC data and save it
 app.post('/api/log-nfc', (req, res) => {
   try {
-    const { nfcData } = req.body;
+    const { nfcData, action, timestamp } = req.body; // Ensure consistent structure
     if (!nfcData) {
-      console.error('No NFC data provided.');
       return res.status(400).json({ message: 'NFC data is required' });
     }
 
-    const timestamp = new Date().toISOString();
-    nfcLogs.push({ nfcData, timestamp });
-    console.log('Saved NFC data:', { nfcData, timestamp });
-
-    // Ensure JSON response
-    res.setHeader('Content-Type', 'application/json');
+    nfcLogs.push({ tagContent: nfcData, action, timestamp }); // Use consistent keys
     res.status(200).json({ message: 'NFC data logged successfully' });
   } catch (error) {
     console.error('Error processing request:', error.message);
-
-    // Always return valid JSON even in errors
-    res.setHeader('Content-Type', 'application/json');
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
 
 
-
-
 // Endpoint to get NFC logs
-app.get('/api/get-logs', (req, res) => {
-  res.status(200).json(nfcLogs);
+app.get('/api/nfc-logs', (req, res) => { // Changed endpoint to match frontend
+  res.status(200).json({ logs: nfcLogs }); // Wrap logs in an object for consistency
 });
+
 
 // Start the server
 app.listen(port, () => {
