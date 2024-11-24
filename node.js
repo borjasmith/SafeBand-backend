@@ -10,6 +10,7 @@ app.use(express.json());
 
 // Endpoint to receive NFC data and save it
 app.post('/api/log-nfc', (req, res) => {
+  console.log('posting la wea')
   try {
     const { nfcData, action, timestamp } = req.body; // Ensure consistent structure
     if (!nfcData) {
