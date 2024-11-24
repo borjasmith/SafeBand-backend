@@ -1,26 +1,3 @@
-// const express = require('express');
-// const app = express();
-
-// const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
-
-// const cors = require('cors');
-
-// // Allow all origins or specify your frontend domain
-// app.use(cors({
-//   origin: frontendUrl,
-// }));
-
-// app.use(express.json());
-
-// // Your routes and middleware here
-// app.get('/', (req, res) => {
-//     res.send('Hello World');
-// });
-
-// module.exports = app;
-
-// NUEVO
-
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -56,6 +33,8 @@ app.post('/api/log-nfc', (req, res) => {
 
     // Store NFC log
     nfcLogs.push({ tagContent: nfcData, action, timestamp });
+
+    console.log(nfcLogs)
 
     // Send a plain text response
     res.status(200).type('text/plain').send('NFC data logged successfully');
