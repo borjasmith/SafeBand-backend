@@ -31,7 +31,7 @@ router.post('/api/log-nfc', async (req, res) => {
   const { tagContent, action } = req.body;
   
   if (!tagContent || !action) {
-    return res.status(400).send('NFC data is required'); // Handle missing fields explicitly
+    return res.status(400).send('NFC data is requireddd'); // Handle missing fields explicitly
   }
 
   try {
