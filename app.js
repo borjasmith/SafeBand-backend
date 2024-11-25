@@ -7,6 +7,9 @@ require('dotenv').config();
 const app = express();
 const router = express.Router();
 
+// Import logModel
+const logModel = require('./logModel');
+
 // Use Render's environment port or default to 3000
 const port = process.env.PORT || 3000;
 
