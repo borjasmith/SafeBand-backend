@@ -36,31 +36,6 @@ router.post('/api/log-nfc', async (req, res) => {
   }
 });
 
-
-// // Endpoint to receive NFC data and save it
-// app.post('/api/log-nfc', (req, res) => {
-//   try {
-//     const { nfcData, action, timestamp } = req.body;
-//     if (!nfcData) {
-//       res.status(400).type('text/plain').send('NFC data is required');
-//       return;
-//     }
-
-//     // Store NFC log
-//     nfcLogs.push({ tagContent: nfcData, action, timestamp });
-
-//     console.log(nfcLogs)
-
-//     // Send a plain text response
-//     res.status(200).type('text/plain').send('NFC data logged successfully');
-//   } catch (error) {
-//     console.error('Error processing request:', error.message);
-
-//     // Send a plain text error response
-//     res.status(500).type('text/plain').send('Internal server error');
-//   }
-// });
-
 // GET route to retrieve logs
 router.get('/api/get-logs', async (req, res) => {
   try {
@@ -70,12 +45,6 @@ router.get('/api/get-logs', async (req, res) => {
     res.status(500).send('Error fetching logs');
   }
 });
-
-// // Endpoint to get NFC logs
-// app.get('/api/get-logs', (req, res) => {
-//   console.log('Fetching NFC logs...');
-//   res.status(200).json({ logs: nfcLogs });
-// });
 
 // Start the server
 app.listen(port, () => {
