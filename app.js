@@ -1,16 +1,17 @@
-// app.js
 const express = require('express');
 const cors = require('cors');
+const http = require('http');
+const { Client } = require('pg');
+require('dotenv').config();
+
 const app = express();
-const port = 3000;
 const router = express.Router();
-const logModel = require('./logModel');
 
-// Set frontend URL from environment variable (assuming it's set in `.env`)
-const frontendUrl = process.env.FRONTEND_URL; // or replace with hardcoded URL
+// Use Render's environment port or default to 3000
+const port = process.env.PORT || 3000;
 
-// Mock database (in-memory for simplicity)
-let nfcLogs = [];
+// Set frontend URL from environment variable
+const frontendUrl = process.env.FRONTEND_URL;
 
 // Middleware to allow CORS from the frontend URL
 app.use(cors({
@@ -27,11 +28,11 @@ app.get('/', (req, res) => {
 
 // POST route to log NFC data
 router.post('/api/log-nfc', async (req, res) => {
-  console.log('Request Body:', req.body); // Add this to inspect the request body
+  console.log('Request Body:', req.body);
   const { tagContent, action } = req.body;
   
   if (!tagContent || !action) {
-    return res.status(400).send('NFC data is required'); // Handle missing fields explicitly
+    return res.status(400).send('NFC data is required');
   }
 
   try {
@@ -48,16 +49,32 @@ router.get('/api/get-logs', async (req, res) => {
     const logs = await logModel.getAllLogs();
     res.status(200).json({ logs });
   } catch (error) {
-    console.error('GET /api/get-logs Error:', error.message); // Log the actual error
-    res.status(500).send('Error fetching logs'); // Keep the generic error for users
+    console.error('GET /api/get-logs Error:', error.message);
+    res.status(500).send('Error fetching logs');
   }
 });
 
+app.use(router);
+
+// Create the server
+const server = http.createServer(app);
 
 // Start the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 
-app.use(router);
-module.exports = router;
+// Connect to PostgreSQL
+const client = new Client({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: String(process.env.DB_PASSWORD),
+  port: process.env.DB_PORT,
+});
+
+client.connect()
+  .then(() => console.log('Connected to PostgreSQL'))
+  .catch(err => console.error('Connection error', err.stack));
+
+module.exports = app;
