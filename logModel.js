@@ -1,6 +1,7 @@
-// logModel.js
-const { Client } = require('pg');
-const client = new Client({
+const { Pool } = require('pg');
+
+// Initialize the connection pool
+const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
@@ -8,12 +9,11 @@ const client = new Client({
   port: process.env.DB_PORT,
 });
 
+// Create a log
 const createLog = async (tagContent, action) => {
   try {
-    await client.connect();
-
     // Ensure the `logs` table exists
-    await client.query(`
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS logs (
         id SERIAL PRIMARY KEY,
         tagContent TEXT NOT NULL,
@@ -23,7 +23,7 @@ const createLog = async (tagContent, action) => {
     `);
 
     // Insert the log entry
-    const result = await client.query(
+    const result = await pool.query(
       'INSERT INTO logs(tagContent, action) VALUES($1, $2)',
       [tagContent, action]
     );
@@ -32,18 +32,16 @@ const createLog = async (tagContent, action) => {
   } catch (error) {
     console.error('Error creating log:', error.message);
     throw error;
-  } finally {
-    await client.end(); // Close the connection after the query
   }
 };
 
 // Get all logs
 const getAllLogs = async () => {
   try {
-    const logs = await client.query('SELECT * FROM logs ORDER BY timestamp DESC');
+    const logs = await pool.query('SELECT * FROM logs ORDER BY timestamp DESC');
     return logs.rows;
   } catch (error) {
-    console.error('Error fetching logs:', error);
+    console.error('Error fetching logs:', error.message);
     throw error;
   }
 };

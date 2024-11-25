@@ -31,7 +31,7 @@ router.post('/api/log-nfc', async (req, res) => {
   const { tagContent, action } = req.body;
   
   if (!tagContent || !action) {
-    return res.status(400).send('NFC data is requireddd'); // Handle missing fields explicitly
+    return res.status(400).send('NFC data is required'); // Handle missing fields explicitly
   }
 
   try {
@@ -42,17 +42,17 @@ router.post('/api/log-nfc', async (req, res) => {
   }
 });
 
-
-
 // GET route to retrieve logs
 router.get('/api/get-logs', async (req, res) => {
   try {
     const logs = await logModel.getAllLogs();
     res.status(200).json({ logs });
   } catch (error) {
-    res.status(500).send('Error fetching logs');
+    console.error('GET /api/get-logs Error:', error.message); // Log the actual error
+    res.status(500).send('Error fetching logs'); // Keep the generic error for users
   }
 });
+
 
 // Start the server
 app.listen(port, () => {
