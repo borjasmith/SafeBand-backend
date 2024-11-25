@@ -1,3 +1,4 @@
+// logModel.js
 const { Client } = require('pg');
 const client = new Client({
   user: process.env.DB_USER,
@@ -11,16 +12,16 @@ const createLog = async (tagContent, action) => {
   try {
     await client.connect();
     const result = await client.query('INSERT INTO logs(tagContent, action) VALUES($1, $2)', [tagContent, action]);
-    console.log('Log created:', result); // Optionally log the result
+    console.log('Log created:', result);
     return result;
   } catch (error) {
     console.error('Error creating log:', error.message);
-    console.error('Error details:', error);
     throw error;
   } finally {
-    await client.end();  // Close the connection after query
+    await client.end();
   }
 };
+
 
 // Get all logs
 const getAllLogs = async () => {

@@ -1,3 +1,4 @@
+// app.js
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -26,8 +27,13 @@ app.get('/', (req, res) => {
 
 // POST route to log NFC data
 router.post('/api/log-nfc', async (req, res) => {
-  console.log(req.body);  // Log the body of the request
+  console.log('Request Body:', req.body); // Add this to inspect the request body
   const { tagContent, action } = req.body;
+  
+  if (!tagContent || !action) {
+    return res.status(400).send('NFC data is required'); // Handle missing fields explicitly
+  }
+
   try {
     await logModel.createLog(tagContent, action);
     res.status(200).send('Log created');
@@ -35,6 +41,8 @@ router.post('/api/log-nfc', async (req, res) => {
     res.status(500).send('Error creating log');
   }
 });
+
+
 
 // GET route to retrieve logs
 router.get('/api/get-logs', async (req, res) => {
