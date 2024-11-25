@@ -11,17 +11,31 @@ const client = new Client({
 const createLog = async (tagContent, action) => {
   try {
     await client.connect();
-    const result = await client.query('INSERT INTO logs(tagContent, action) VALUES($1, $2)', [tagContent, action]);
+
+    // Ensure the `logs` table exists
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS logs (
+        id SERIAL PRIMARY KEY,
+        tagContent TEXT NOT NULL,
+        action TEXT NOT NULL,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Insert the log entry
+    const result = await client.query(
+      'INSERT INTO logs(tagContent, action) VALUES($1, $2)',
+      [tagContent, action]
+    );
     console.log('Log created:', result);
     return result;
   } catch (error) {
     console.error('Error creating log:', error.message);
     throw error;
   } finally {
-    await client.end();
+    await client.end(); // Close the connection after the query
   }
 };
-
 
 // Get all logs
 const getAllLogs = async () => {
